@@ -30,6 +30,7 @@ import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.tencent.mm.opensdk.utils.ILog;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
@@ -172,6 +173,34 @@ public class Wechat extends CordovaPlugin {
 
             if (!appId.isEmpty()) {
                 wxAPI = WXAPIFactory.createWXAPI(ctx, appId, true);
+
+                // 获取微信客户端版本
+                int clientVersion = wxAPI.getWXAppSupportAPI();
+                Log.d(TAG, "clientVersion: " + clientVersion);
+
+                // 设置日志监听
+                wxAPI.setLogImpl(new ILog() {
+                    @Override
+                    public void v(String tag, String msg) {
+                        Log.v(TAG, "v: " + tag + " " + msg);
+                    }
+                    @Override
+                    public void d(String tag, String msg) {
+                        Log.d(TAG, "d: " + tag + " " + msg);
+                    }
+                    @Override
+                    public void i(String tag, String msg) {
+                        Log.i(TAG, "i: " + tag + " " + msg);
+                    }
+                    @Override
+                    public void w(String tag, String msg) {
+                        Log.w(TAG, "w: " + tag + " " + msg);
+                    }
+                    @Override
+                    public void e(String tag, String msg) {
+                        Log.e(TAG, "e: " + tag + " " + msg);
+                    }
+                });
             }
         }
 
